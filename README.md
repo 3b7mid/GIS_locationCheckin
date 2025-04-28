@@ -96,9 +96,9 @@ PORT=3000
     ```
 
 3. Set up environment variables. You’ll need the following:
-    - **GOOGLE_API_KEY**: Use 
+    - **GOOGLE_API_KEY**: Use Your GOOGLE_API_KEY
     - **MONGODB_URI**: The connection string for MongoDB
-    - **PORT**: Port on which the server will run (default: 5000)
+    - **PORT**: Port on which the server will run (default: 3000)
 
 4. Start the application:
     ```bash
