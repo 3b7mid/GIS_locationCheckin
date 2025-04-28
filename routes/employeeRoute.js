@@ -1,15 +1,16 @@
 import express from 'express';
-
+import { createEmployeeValidator, deleteEmployeeValidator, getEmployeeValidator, updateEmployeeValidator } from '../middlewares/employeeMiddleware.js';
+import { createEmployee, deleteEmployee, getAllEmployees, getEmployee, UpdateEmployee } from '../controllers/employeeController.js';
 
 const router = express.Router();
 
 router.route('/')
-    .get()
-    .post();
+    .get(getAllEmployees)
+    .post(createEmployeeValidator, createEmployee);
 
 router.route('/:employeeId')
-    .get()
-    .put()
-    .delete();
+    .get(getEmployeeValidator, getEmployee)
+    .put(updateEmployeeValidator, UpdateEmployee)
+    .delete(deleteEmployeeValidator, deleteEmployee);
 
 export default router;

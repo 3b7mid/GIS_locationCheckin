@@ -1,7 +1,7 @@
 class ApiError extends Error {
     constructor(message, statusCode) {
         super(message);
-        if(!statusCode || typeof statusCode !== 'number') {
+        if(!statusCode || typeof statusCode !== 'number'|| isNaN(statusCode)) {
             throw new Error('Status Code must be a valid number');
         }
 

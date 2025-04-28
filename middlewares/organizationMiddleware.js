@@ -19,12 +19,32 @@ export const createOrganizationValidator = [
             }
         }),
 
-    body('location')
-        .custom(async (location) => {
-            const { latitude, longitude } = location;
+    body('location.type')
+        .notEmpty()
+        .withMessage('Location type is required')
+        .equals('Point')
+        .withMessage('Location type is required'),
+
+    body("location.coordinates")
+        .notEmpty()
+        .withMessage("Coordinates is required")
+        .isArray()
+        .withMessage('Coordinates must be an array with [longitude, latitude]')
+        .custom(([longitude, latitude]) => {
+            if (typeof longitude !== 'number' || typeof latitude !== 'number') {
+                throw new ApiError('Coordinates must be numbers', 400);
+            }
+            if (longitude < -180 || longitude > 180) {
+                throw new ApiError('Longitude must be between -180 and 180', 400);
+            }
+            if (latitude < -90 || latitude > 90) {
+                throw new ApiError('Latitude must be between -90 and 90', 400);
+            }
+            return true;
+        })
+        .custom(async ([longitude, latitude]) => {
             const existingLocation = await Organization.findOne({
-                'location.longitude': longitude,
-                'location.latitude': latitude
+                'location.coordinates': [longitude, latitude]
             });
 
             if (existingLocation) {
@@ -34,32 +54,10 @@ export const createOrganizationValidator = [
             return true;
         }),
 
-    body("location.longitude")
-        .notEmpty()
-        .withMessage("Longitude is required")
-        .isFloat()
-        .withMessage("Longitude must be a number")
-        .custom(longitude => {
-            if (longitude < -180 || longitude > 180) {
-                throw new ApiError("Longitude must be between -180 and 180", 400);
-            }
-            return true;
-        }),
-
-    body("location.latitude")
-        .notEmpty().withMessage("Latitude is required")
-        .isFloat().withMessage("Latitude must be a number")
-        .custom(latitude => {
-            if (latitude < -90 || latitude > 90) {
-                throw new ApiError("Latitude must be between -90 and 90", 400);
-            }
-            return true;
-        }),
-
     validatorMiddleware
 ];
 
-const OrganizationIdValidator = [
+const organizationIdValidator = [
     check('organizationId')
         .isMongoId()
         .withMessage('Invalid mongo ID format')
@@ -68,7 +66,7 @@ const OrganizationIdValidator = [
 
             if (!organization) {
                 return Promise.reject(
-                    new ApiError(`Organization Not found`, 400)
+                    new ApiError(`Organization not found`, 400)
                 );
             }
         }),
@@ -77,17 +75,8 @@ const OrganizationIdValidator = [
 ];
 
 
-export const getOrganizationValidator = [
-    OrganizationIdValidator,
-    validatorMiddleware
-];
+export const getOrganizationValidator = organizationIdValidator;
 
-export const updateOrganizationValidator = [
-    OrganizationIdValidator,
-    validatorMiddleware
-];
+export const updateOrganizationValidator = organizationIdValidator;
 
-export const deleteOrganizationValidator = [
-    OrganizationIdValidator,
-    validatorMiddleware
-];
+export const deleteOrganizationValidator = organizationIdValidator;

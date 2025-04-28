@@ -2,15 +2,20 @@ import mongoose from "mongoose";
 
 const organizationSchema = new mongoose.Schema(
     {
-        name: { type: String },
+        name: {
+            type: String
+        },
         location: {
-            latitude: Number,
-            longitude: Number
+            type: {
+                type: String,
+                enum: ['Point'],
+            },
+            coordinates: [Number] // [longitude, latitude] Note: GeoJSON expects [longitude, latitude], not [latitude, longitude]
         },
     },
     { timestamps: true }
 );
 
-export default mongoose.model('Oraanization', organizationSchema);
+organizationSchema.index({ location: '2dsphere' });
 
-// 💡 Note: GeoJSON expects [longitude, latitude], not [latitude, longitude]. Easy to mix up.
+export default mongoose.model('Organization', organizationSchema);

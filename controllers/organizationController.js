@@ -1,5 +1,4 @@
 import asyncHandler from "express-async-handler";
-import ApiError from "../utils/apiError.js";
 import { sanitizeOrganization } from "../utils/sanitizeData.js";
 import Organization from "../models/organizationModel.js";
 
@@ -11,10 +10,10 @@ export const createOrganization = asyncHandler(async (req, res) => {
 
     if (organization)
 
-    res.status(201).json({
-        success: true,
-        data: sanitizeOrganization(organization)
-    });
+        res.status(201).json({
+            success: true,
+            data: sanitizeOrganization(organization)
+        });
 });
 
 // @desc    Get all organizations
