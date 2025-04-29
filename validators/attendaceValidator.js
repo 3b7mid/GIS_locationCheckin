@@ -1,6 +1,6 @@
 import { check, body, query } from 'express-validator';
 import ApiError from '../utils/apiError.js';
-import validatorMiddleware from './validatorMiddleware.js';
+import validatorMiddleware from '../middlewares/validatorMiddleware.js';
 import Employee from '../models/employeeModel.js';
 
 export const checkInValidator = [

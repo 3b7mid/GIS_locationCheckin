@@ -138,9 +138,15 @@ export const employeeCheckinRange = asyncHandler(async (req, res) => {
     );
 
     const withinRange = distance <= 100;
+    const messaage = withinRange
+        ? `You are within the allowed check-in range of the organization.`
+        : `You are outside the allowed check-in range. You are approximately ${distance - 100} meters too far.`;
+
 
     res.status(200).json({
         success: true,
+        messaage,
+        distance,
         withinRange
     });
 });

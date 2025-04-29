@@ -1,6 +1,6 @@
 import express from 'express';
 import 'dotenv/config';
-import dbConnection from './utils/db.js';
+import dbConnection from './config/db.js';
 import errorHandler from './middlewares/errorHandlerMiddleware.js'
 import mountRoutes from './routes/index.js';
 

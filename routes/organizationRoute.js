@@ -1,5 +1,5 @@
 import express from 'express';
-import { createOrganizationValidator, deleteOrganizationValidator, getOrganizationValidator, updateOrganizationValidator } from '../middlewares/organizationMiddleware.js';
+import { createOrganizationValidator, deleteOrganizationValidator, getOrganizationValidator, updateOrganizationValidator } from '../validators/organizationValidator.js';
 import { createOrganization, deleteOrganization, getAllOrganization, getOrganization, UpdateOrganization } from '../controllers/organizationController.js';
 
 const router = express.Router();

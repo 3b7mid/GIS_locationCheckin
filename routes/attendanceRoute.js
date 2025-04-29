@@ -1,5 +1,5 @@
 import express from 'express';
-import { checkInValidator, checkOutValidator, employeeAttendanceValidator, employeeCheckinRangeValidator } from '../middlewares/attendaceMiddleware.js';
+import { checkInValidator, checkOutValidator, employeeAttendanceValidator, employeeCheckinRangeValidator } from '../validators/attendaceValidator.js';
 import { employeeCheckin, employeeCheckinRange, employeeCheckout, getAllAttendance, getEmployeeAttendance, getTodayAttendance } from '../controllers/attendanceController.js';
 
 const router = express.Router();
