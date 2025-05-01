@@ -30,14 +30,12 @@ A location-based check-in system designed for employee attendance management. Th
 Before you start, make sure to set up the following environment variables in your `.env` file.
 
 ### Required Variables:
-1. **GOOGLE_API_KEY**: Your Google Maps API key for geolocation services.
-2. **MONGODB_URI**: MongoDB connection string for your MongoDB database.
-3. **PORT**: The port on which the server will run (default: 5000).
+1. **MONGODB_URI**: MongoDB connection string for your MongoDB database.
+2. **PORT**: The port on which the server will run (default: 3000).
 
 ### Example `.env` file:
 
 ```env
-GOOGLE_API_KEY=your_google_api_key_here
 MONGODB_URI=mongodb://your_mongo_connection_string
 PORT=3000
 ```
@@ -96,7 +94,6 @@ PORT=3000
     ```
 
 3. Set up environment variables. You’ll need the following:
-    - **GOOGLE_API_KEY**: Use Your GOOGLE_API_KEY
     - **MONGODB_URI**: The connection string for MongoDB
     - **PORT**: Port on which the server will run (default: 3000)
 
