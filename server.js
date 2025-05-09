@@ -1,8 +1,7 @@
-import express from 'express';
-import 'dotenv/config';
-import dbConnection from './config/db.js';
-import errorHandler from './middlewares/errorHandlerMiddleware.js'
-import mountRoutes from './routes/index.js';
+import express from "express";
+import "dotenv/config";
+import dbConnection from "./config/db.js";
+import mountRoutes from "./routes/index.js";
 
 const app = express();
 
@@ -11,8 +10,6 @@ dbConnection();
 app.use(express.json());
 
 mountRoutes(app);
-
-app.use(errorHandler);
 
 const PORT = process.env.PORT;
 
