@@ -41,13 +41,13 @@ export const createEmployeeValidator = [
       return true;
     }),
 
-  body("organizationId")
+  body("organization")
     .notEmpty()
     .withMessage("Employee must belong to an organization")
     .isMongoId()
     .withMessage("Invalid mongodb ID format")
-    .custom(async (organizationId) => {
-      const organization = await Organization.findById(organizationId);
+    .custom(async (val) => {
+      const organization = await Organization.findById(val);
 
       if (!organization) {
         throw new ApiError(`Organization not found`, 404);
@@ -99,14 +99,14 @@ export const updateEmployeeValidator = [
       return true;
     }),
 
-  body("organizationId")
+  body("organization")
     .optional()
     .notEmpty()
     .withMessage("Employee must belong to an organization")
     .isMongoId()
     .withMessage("Invalid mongodb ID format")
-    .custom(async (organizationId) => {
-      const organization = await Organization.findById(organizationId);
+    .custom(async (val) => {
+      const organization = await Organization.findById(val);
 
       if (!organization) {
         throw new ApiError(`Organization not found`, 404);

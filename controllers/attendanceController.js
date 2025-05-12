@@ -2,8 +2,8 @@ import asyncHandler from "express-async-handler";
 import ApiError from "../utils/apiError.js";
 import { sanitizeAttendance } from "../utils/sanitizeData.js";
 import moment from "moment";
-import geolib from "geolib";
 import Employee from "../models/employeeModel.js";
+import Organization from '../models/organizationModel.js';
 import Attendance from "../models/attendanceModel.js";
 
 const calculateDurationTime = (checkinTime, checkoutTime) => {
@@ -16,14 +16,25 @@ const calculateDurationTime = (checkinTime, checkoutTime) => {
 export const employeeCheckin = asyncHandler(async (req, res, next) => {
   const { employeeId, checkinLocation } = req.body;
   const [lng, lat] = checkinLocation.coordinates;
-  const employee = await Employee.findById(employeeId).populate("organization");
-  const orgLocation = employee.organization.location.coordinates;
-  const distance = geolib.getDistance(
-    { latitude: lat, longitude: lng },
-    { latitude: orgLocation[1], longitude: orgLocation[0] }
-  );
 
-  if (distance > 100) {
+  const employee = await Employee.findById(employeeId).populate("organization");
+
+  const orgLocation = employee.organization.location;
+
+  const nearBy = await Organization.findOne({
+    _id: employee.organization._id,
+    location: {
+      $near: {
+        $geometry: {
+          type: 'Point',
+          coordinates: [lng, lat]
+        },
+        $maxDistance: 100
+      }
+    }
+  });
+
+  if (!nearBy) {
     return next(new ApiError(`Out of allowed range (100 meters).`, 400));
   }
   const checkinTime = new Date();
@@ -48,6 +59,23 @@ export const employeeCheckout = asyncHandler(async (req, res, next) => {
   const { employeeId, checkoutLocation } = req.body;
   const [lng, lat] = checkoutLocation.coordinates;
   const employee = await Employee.findById(employeeId).populate("organization");
+
+  const isNearby = await Organization.findOne({
+    _id: employee.organization._id,
+    location: {
+      $near: {
+        $geometry: {
+          type: "Point",
+          coordinates: [lng, lat],
+        },
+        $maxDistance: 100,
+      },
+    },
+  });
+
+  if (!isNearby) {
+    return next(new ApiError("Checkout location is out of allowed range (100 meters).", 400));
+  }
 
   const attendance = await Attendance.findOne({
     employee: employeeId,
@@ -83,9 +111,7 @@ export const employeeCheckout = asyncHandler(async (req, res, next) => {
 export const getEmployeeAttendance = asyncHandler(async (req, res, next) => {
   const { employeeId } = req.params;
 
-  const attendances = await Attendance.find({ employee: employeeId }).sort({
-    checkInTime: -1,
-  });
+  const attendances = await Attendance.find({ employee: employeeId }).sort({ checkInTime: -1 });
 
   if (!attendances.length) {
     return next(
@@ -108,9 +134,9 @@ export const getTodayAttendance = asyncHandler(async (req, res, next) => {
     $expr: {
       $eq: [
         { $dateToString: { format: "%Y-%m-%d", date: "$checkInTime" } },
-        todayDateString,
-      ],
-    },
+        todayDateString
+      ]
+    }
   }).populate({ path: "employee", select: "-createdAt -updatedAt -__v" });
 
   if (!attendanceRecords || attendanceRecords.length === 0) {
@@ -137,24 +163,30 @@ export const getAllAttendance = asyncHandler(async (req, res) => {
 
 export const employeeCheckinRange = asyncHandler(async (req, res) => {
   const { lat, lng, employeeId } = req.query;
-  const employee = await Employee.findById(employeeId).populate("organization");
-  const orgLocation = employee.organization.location.coordinates;
-  const distance = geolib.getDistance(
-    { latitude: lat, longitude: lng },
-    { latitude: orgLocation[1], longitude: orgLocation[0] }
-  );
+  const employee = await Employee.findById(employeeId).populate('organization');
+  const orgLocation = employee.organization.location;
 
-  const withinRange = distance <= 100;
-  const messaage = withinRange
+  const isNearby = await Organization.findOne({
+    _id: employee.organization._id,
+    location: {
+      $near: {
+        $geometry: {
+          type: "Point",
+          coordinates: [lng, lat]
+        },
+        $maxDistance: 100
+      },
+    },
+  });
+
+  const withinRange = Boolean(isNearby);
+  const message = withinRange
     ? `You are within the allowed check-in range of the organization.`
-    : `You are outside the allowed check-in range. You are approximately ${
-        distance - 100
-      } meters too far.`;
+    : `You are outside the allowed check-in range.`;
 
   res.status(200).json({
     success: true,
-    messaage,
-    distance,
-    withinRange,
+    message,
+    withinRange
   });
 });

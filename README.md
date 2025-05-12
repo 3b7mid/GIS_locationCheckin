@@ -23,7 +23,6 @@ A location-based check-in system designed for employee attendance management. Th
 - **express**: `^5.1.0` - Web framework for building APIs and applications.
 - **express-async-handler**: `^1.2.0` - Helps with handling async requests in Express.
 - **express-validator**: `^7.2.1` - Input validation middleware for Express.
-- **geolib**: `^3.3.4` - Provides geospatial functions such as distance calculation.
 - **moment**: `^2.30.1` - Date manipulation library, used for handling and formatting dates.
 - **mongoose**: `^8.13.2` - MongoDB ODM (Object Data Modeling) library.
 - **nodemon**: `^3.1.9` - A tool that automatically restarts your application when file changes are detected.

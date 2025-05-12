@@ -6,12 +6,16 @@ import Organization from "../models/organizationModel.js";
 // @route   POST /api/organizations
 // @access  Private/Admin
 export const createOrganization = asyncHandler(async (req, res) => {
-  const organization = await Organization.create(req.body);
+  const { name, location } = req.body;
+  const organization = await Organization.create({
+    name,
+    location
+  });
 
   res.status(201).json({
     success: true,
     message: "Organization created successfully",
-    data: sanitizeOrganization(organization),
+    data: sanitizeOrganization(organization)
   });
 });
 
@@ -25,7 +29,7 @@ export const getAllOrganization = asyncHandler(async (req, res) => {
   res.status(201).json({
     success: true,
     result: totalOrganization,
-    data: organizations.map(sanitizeOrganization),
+    data: organizations.map(sanitizeOrganization)
   });
 });
 
@@ -38,7 +42,7 @@ export const getOrganization = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    data: sanitizeOrganization(organization),
+    data: sanitizeOrganization(organization)
   });
 });
 
@@ -56,7 +60,7 @@ export const UpdateOrganization = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Organization updated successfully",
-    data: sanitizeOrganization(organization),
+    data: sanitizeOrganization(organization)
   });
 });
 
@@ -69,6 +73,6 @@ export const deleteOrganization = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: "Organization deleted successfully",
+    message: "Organization deleted successfully"
   });
 });

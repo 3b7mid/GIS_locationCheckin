@@ -6,17 +6,18 @@ import Employee from "../models/employeeModel.js";
 // @route   POST /api/employees
 // @access  Private/Admin
 export const createEmployee = asyncHandler(async (req, res) => {
+  const { name, email, phone, organization } = req.body;
   const employee = await Employee.create({
-    name: req.body.name,
-    email: req.body.email,
-    phone: req.body.phone,
-    organization: req.body.organizationId,
+    name,
+    email,
+    phone,
+    organization
   });
 
   res.status(201).json({
     success: true,
     message: "Employee created successfully",
-    data: sanitizeEmployee(employee),
+    data: sanitizeEmployee(employee)
   });
 });
 
@@ -30,7 +31,7 @@ export const getAllEmployees = asyncHandler(async (req, res) => {
   res.status(201).json({
     success: true,
     result: totalEmployees,
-    data: employees.map(sanitizeEmployee),
+    data: employees.map(sanitizeEmployee)
   });
 });
 
@@ -43,7 +44,7 @@ export const getEmployee = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    data: sanitizeEmployee(employee),
+    data: sanitizeEmployee(employee)
   });
 });
 
@@ -60,7 +61,7 @@ export const UpdateEmployee = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Employee updated successfully",
-    data: sanitizeEmployee(employee),
+    data: sanitizeEmployee(employee)
   });
 });
 
@@ -73,6 +74,6 @@ export const deleteEmployee = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "Employee deleted successfully",
+    message: "Employee deleted successfully"
   });
 });

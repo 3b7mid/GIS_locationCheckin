@@ -30,4 +30,6 @@ const attendanceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+attendanceSchema.index({location: "2dsphere"})
+
 export default mongoose.model("Attendance", attendanceSchema);
